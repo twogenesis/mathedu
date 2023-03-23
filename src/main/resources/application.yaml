@@ -1,0 +1,20 @@
+server:
+  port: 9988
+spring:
+  datasource:
+    url: jdbc:mysql:localhost:3306/mathedu
+    username: root
+    password: 1234
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 60MB
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+mathedu:
+  filepath:
+    notice: /home/mathedu/notice
+    bbs: /home/mathedu/bbs
