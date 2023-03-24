@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mathedu.mathedu.admin.mapper.AdminMapper">
+    <select id="loginUser" resultType="com.mathedu.mathedu.admin.dao.response.AdminLoginResponseDAO">
+        select admin_id as id, admin_status as status from admin_info where admin_id = #{id} and admin_pwd = #{pwd}
+    </select>
+</mapper>
