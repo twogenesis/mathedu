@@ -5,4 +5,10 @@
     <select id="loginUser" resultType="com.mathedu.mathedu.admin.dao.response.AdminLoginResponseDAO">
         select admin_id as id, admin_status as status from admin_info where admin_id = #{id} and admin_pwd = #{pwd}
     </select>
+    <select id="isExistId" resultType="java.lang.Boolean">
+        select count(*) = 1 from admin_info where admin_id = #{id}
+    </select>
+    <insert id="addAdminInfo">
+        insert into admin_info(admin_id, admin_pwd) values (#{id}, #{pwd})
+    </insert>
 </mapper>

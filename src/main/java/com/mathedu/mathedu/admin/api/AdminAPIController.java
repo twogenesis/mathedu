@@ -19,8 +19,8 @@ public class AdminAPIController {
         return new ResponseEntity<>(response, response.getResponse().getCode());
     }
     @PutMapping("")
-    public ResponseEntity<AdminAPIResponseDAO> putAdminInfo(@RequestBody AdminInfoRequestDAO join) {
-
-        return new ResponseEntity<>(response, response.getResponse().getCode());
+    public ResponseEntity<AdminAPIResponseDAO> putAdminInfo(@RequestBody AdminInfoRequestDAO join) throws Exception{
+        AdminAPIResponseDAO response = adminService.addAdminInfo(join);
+        return new ResponseEntity<>(response, response.getCode());
     }
 }

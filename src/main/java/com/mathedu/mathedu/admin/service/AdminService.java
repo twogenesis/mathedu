@@ -4,6 +4,7 @@ import com.mathedu.mathedu.admin.dao.request.AdminInfoRequestDAO;
 import com.mathedu.mathedu.admin.dao.response.AdminAPIResponseDAO;
 import com.mathedu.mathedu.admin.dao.response.AdminLoginResponseDAO;
 import com.mathedu.mathedu.admin.mapper.AdminMapper;
+import com.mathedu.mathedu.utils.AESAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,20 @@ public class AdminService {
             );
         }
         return dao;
+    }
+
+    public AdminAPIResponseDAO addAdminInfo(AdminInfoRequestDAO join) throws Exception {
+        AdminAPIResponseDAO response;
+        if(adminMapper.isExistId(join.getId())) {
+            response = AdminAPIResponseDAO.builder().status(false).message(join.getId()+"은/는 이미 등록된 아이디입니다.")
+                    .code(HttpStatus.CONFLICT).build();
+        }
+        else {
+            join.setPwd(AESAlgorithm.Encrypt(join.getPwd()));
+            adminMapper.addAdminInfo(join);
+            response = AdminAPIResponseDAO.builder().status(true).message("관리자 계정이 사용대기로 등록되었습니다.")
+                    .code(HttpStatus.OK).build();
+        }
+        return response;
     }
 }
