@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,22 +51,24 @@ public class FileService {
     public List<String> saveBoardFiles(String type, MultipartFile[] files) throws Exception {
         Path targetLocation = null;
         List<String> fileList = new ArrayList<>();
-        if (type.equals("bbs")) {
-            targetLocation = Paths.get(bbsFilePath);
-        }
-        else if (type.equals("notice")) {
-            targetLocation = Paths.get(noticeFilePath);
-        }
-        else {
+        if (!(type.equals("bbs") || type.equals("notice"))) {
             return null;
         }
         for(MultipartFile file: files) {
+            if (type.equals("bbs")) {
+                targetLocation = Paths.get(bbsFilePath);
+            }
+            else if (type.equals("notice")) {
+                targetLocation = Paths.get(noticeFilePath);
+            }
             String fileName = file.getOriginalFilename();
             String[] split = fileName.split("\\.");
             String ext = split[split.length - 1];
             fileName = generateRandomStr() + "." + ext;
             targetLocation = targetLocation.resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            InputStream fstream = file.getInputStream();
+            Files.copy(fstream, targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            fstream.close();
             fileList.add(fileName);
         }
         return fileList;

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mathedu.mathedu.bbsinfo.mapper.BbsMapper">
+    <insert id="insertBbs" parameterType="com.mathedu.mathedu.bbsinfo.dao.request.BbsInfoDAO" useGeneratedKeys="true" keyProperty="no" keyColumn="bbs_seq">
+        INSERT INTO bbs_info(bbs_title, bbs_content, bbs_teacher_seq, bbs_class_seq)
+        VALUES(#{title}, #{content}, #{teacherNo}, #{classNo});
+    </insert>
+    <insert id="insertBbsFileInfos">
+        INSERT INTO mathedu.bbs_info_file(bfile_name, bfile_bbs_seq)
+        VALUES
+        <foreach collection="files" item="file" separator=",">
+            (#{file}, #{bbsNo})
+        </foreach>
+    </insert>
+    <delete id="deleteBbs">
+        delete from bbs_info where bbs_seq in
+        <foreach collection="bbsNos" open="(" close=")" separator="," item="no">#{no}</foreach>
+        and bbs_teacher_seq = #{teacherNo}
+    </delete>
+
+    <select id="getTotalBbsCount" resultType="java.lang.Integer">
+        select count(*) from bbs_info where bbs_title like '%${keyword}%'
+
+    </select>
+    <select id="getBbsList" resultType="com.mathedu.mathedu.bbsinfo.dao.response.BbsSummaryDAO">
+        select
+            bbs_seq as no, bbs_title as title,
+            bbs_category as category, bbs_regdt as regDt,
+            teacher_seq as authorNo, teacher_name as authorName,
+            bbs_class_seq as classNo
+        from bbs_info a left outer join teacher_info b
+        on a.bbs_teacher_seq = b.teacher_seq
+        where bbs_title like '%${keyword}%' and bbs_class_seq = #{classNo}
+        order by bbs_regdt ${order}
+        limit 10 offset ${offset}
+    </select>
+    <select id="getBbsDetailInfo" resultType="com.mathedu.mathedu.bbsinfo.dao.response.BbsDetailInfoDAO">
+        select a.*, b.teacher_name as authorName from (
+          select
+            bbs_seq as no, bbs_category as category,
+            bbs_title as title, bbs_regdt as regDt,
+            bbs_content as contents, bbs_teacher_seq as authorNo,
+            LAG(bbs_seq) over (order by bbs_seq) as prevNo,
+            LAG(bbs_title) over (order by bbs_seq) as prevTitle,
+            LEAD(bbs_seq) over (order by bbs_seq) as nextNo,
+            LEAD(bbs_title) over (order by bbs_seq) as nextTitle
+          from bbs_info
+      ) a inner join teacher_info b on a.authorNo = b.teacher_seq where no = #{bbsNo}
+    </select>
+    <select id="getBbsFileList" resultType="com.mathedu.mathedu.bbsinfo.dao.response.BbsFileDetailDTO">
+        select
+            bfile_name as fileName,
+            SUBSTRING_INDEX(bfile_name, '.', -1) as fileType,
+            CONCAT('/file/bbs/', bfile_name) as downloadURL
+        from bbs_info_file
+        where bfile_bbs_seq = #{bbsNo}
+    </select>
+</mapper>

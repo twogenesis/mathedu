@@ -22,9 +22,10 @@
         INSERT INTO teacher_info(teacher_id, teacher_pwd, teacher_name, teacher_img) VALUES(#{id},#{pwd},#{name},#{imageFile});
     </insert>
     <select id="getTeacherList" resultType="com.mathedu.mathedu.admin.dao.response.AdminTeacherInfoDAO">
-        select teacher_id as id, teacher_name as name, CONCAT('/file/teacher/',teacher_img) as imageFile,
+        select teacher_seq as no, teacher_id as id, teacher_name as name, CONCAT('/file/teacher/',teacher_img) as imageFile,
                teacher_status as status, teacher_regdt as regDt
         from teacher_info where teacher_name like '%${keyword}%'
+        order by ${orderType} ${order}
         limit 10 offset #{offset}
     </select>
     <select id="isExistTeacherId" resultType="java.lang.Boolean">
@@ -32,5 +33,66 @@
     </select>
     <select id="getTeacherTotalCnt" resultType="java.lang.Integer">
         select count(*) from teacher_info where teacher_name like '%${keyword}%'
+    </select>
+    <update id="updateTeacherInfo">
+        update teacher_info
+        set teacher_pwd = #{pwd}
+        <if test="name != null">
+            , teacher_name = #{name}
+        </if>
+        <if test="filename != null">
+            , teacher_img = #{filename}
+        </if>
+        where teacher_id = #{teacherId}
+    </update>
+    <delete id="deleteTeacherInfoById">
+        delete from teacher_info where teacher_id = #{teacherId}
+    </delete>
+    <insert id="insertClassInfo">
+        INSERT INTO class_info
+        (class_name, class_grade, class_days, class_opendt, class_closedt, class_starttime, class_endtime, class_teacher_seq)
+        VALUES(#{name},#{grade},#{days},#{opendt},#{closedt},#{starttime},#{endtime},#{teacherNo})
+
+    </insert>
+    <update id="updateClassInfo">
+        UPDATE class_info
+        SET
+            class_seq = #{classNo}
+            <if test="data.name != null">,class_name = #{data.name}</if>
+            <if test="data.grade != null">,class_grade = #{data.grade}</if>
+            <if test="data.days != null">,class_days = #{data.days}</if>
+            <if test="data.opendt != null">,class_opendt = #{data.opendt}</if>
+            <if test="data.closedt != null">,class_closedt = #{data.closedt}</if>
+            <if test="data.starttime != null">,class_starttime = #{data.starttime}</if>
+            <if test="data.endtime != null">,class_endtime = #{data.endtime}</if>
+            <if test="data.teacherNo != null">,class_teacher_seq = #{data.teacherNo}</if>
+        WHERE class_seq = #{classNo};
+    </update>
+    <select id="getClassInfoBySeq" resultType="com.mathedu.mathedu.admin.dao.response.AdminClassInfoDAO">
+        select
+            class_seq as no, class_name as title, class_grade as grade, class_days as days,
+            class_opendt as opendt, class_closedt as closedt, class_starttime as starttime,
+            class_endtime as endtime, class_teacher_seq as teacher
+        from class_info where class_seq = #{no}
+    </select>
+    <delete id="deleteClassByClassNo">
+        delete from class_info where class_seq = #{classNo}
+    </delete>
+    <select id="getTotalClassCnt" resultType="java.lang.Integer">
+        select count(*) from class_detail_view
+        <if test="searchType == 'class'">where title like '%${keyword}%'</if>
+        <if test="searchType == 'teacher'">where teacher like '%${keyword}%'</if>
+    </select>
+    <select id="getClassList" resultType="com.mathedu.mathedu.admin.dao.response.AdminClassSummaryInfoDAO">
+        select * from class_detail_view
+        <if test="searchType == 'class'">where title like '%${keyword}%'</if>
+        <if test="searchType == 'teacher'">where teacher like '%${keyword}%'</if>
+        order by
+        <if test="orderref == 'class'">seq</if>
+        <if test="orderref == 'teacher'">teacher</if>
+        <if test="orderref == 'opendt'">opendt</if>
+        <if test="orderref == 'closedt'">closedt</if>
+        ${order}
+        limit 10 offset #{offset};
     </select>
 </mapper>

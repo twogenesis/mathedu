@@ -6,6 +6,7 @@ import java.util.Date;
 
 @Data
 public class AdminTeacherInfoDAO {
+    private Integer no;
     private String id;
     private String name;
     private String imageFile;

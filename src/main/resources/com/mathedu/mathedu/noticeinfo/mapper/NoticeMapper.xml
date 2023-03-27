@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mathedu.mathedu.noticeinfo.mapper.NoticeMapper">
+    <insert id="insertNotice" parameterType="com.mathedu.mathedu.noticeinfo.dao.request.NoticeInfoDAO" useGeneratedKeys="true" keyProperty="no" keyColumn="notice_seq">
+        INSERT INTO notice_info(notice_title, notice_content, notice_teacher_seq, notice_class_seq)
+        VALUES(#{title}, #{content}, #{teacherNo}, #{classNo});
+    </insert>
+    <insert id="insertNoticeFileInfos">
+        INSERT INTO mathedu.notice_info_file(nfile_name, nfile_notice_seq)
+        VALUES
+        <foreach collection="files" item="file" separator=",">
+            (#{file}, #{noticeNo})
+        </foreach>
+    </insert>
+    <delete id="deleteNotice">
+        delete from notice_info where notice_seq in
+        <foreach collection="noticeNos" open="(" close=")" separator="," item="no">#{no}</foreach>
+        and notice_teacher_seq = #{teacherNo}
+    </delete>
+
+    <select id="getTotalNoticeCount" resultType="java.lang.Integer">
+        select count(*) from notice_info where notice_title like '%${keyword}%'
+
+    </select>
+    <select id="getNoticeList" resultType="com.mathedu.mathedu.noticeinfo.dao.response.NoticeSummaryDAO">
+        select
+            notice_seq as no, notice_title as title,
+            notice_category as category, notice_regdt as regDt,
+            teacher_seq as authorNo, teacher_name as authorName,
+            notice_class_seq as classNo
+        from notice_info a left outer join teacher_info b
+        on a.notice_teacher_seq = b.teacher_seq
+        where notice_title like '%${keyword}%' and notice_class_seq = #{classNo}
+        order by notice_regdt ${order}
+        limit 10 offset ${offset}
+    </select>
+    <select id="getNoticeDetailInfo" resultType="com.mathedu.mathedu.noticeinfo.dao.response.NoticeDetailInfoDAO">
+        select a.*, b.teacher_name as authorName from (
+          select
+            notice_seq as no, notice_category as category,
+            notice_title as title, notice_regdt as regDt,
+            notice_content as contents, notice_teacher_seq as authorNo,
+            LAG(notice_seq) over (order by notice_seq) as prevNo,
+            LAG(notice_title) over (order by notice_seq) as prevTitle,
+            LEAD(notice_seq) over (order by notice_seq) as nextNo,
+            LEAD(notice_title) over (order by notice_seq) as nextTitle
+          from notice_info
+      ) a inner join teacher_info b on a.authorNo = b.teacher_seq where no = #{noticeNo}
+    </select>
+    <select id="getNoticeFileList" resultType="com.mathedu.mathedu.noticeinfo.dao.response.NoticeFileDetailDTO">
+        select
+            nfile_name as fileName,
+            SUBSTRING_INDEX(nfile_name, '.', -1) as fileType,
+            CONCAT('/file/notice/', nfile_name) as downloadURL
+        from notice_info_file
+        where nfile_notice_seq = #{noticeNo}
+    </select>
+</mapper>
