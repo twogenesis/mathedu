@@ -12,6 +12,7 @@ import java.util.List;
 @Mapper
 public interface BbsMapper {
     void insertBbs(BbsInfoDAO data);
+    void updateBbs(@Param("bbs") BbsInfoDAO bbs, @Param("bbsNo") Integer bbsNo);
     void insertBbsFileInfos(@Param("files") List<String> files, @Param("bbsNo") Integer bbsNo);
 
     void deleteBbs(@Param("bbsNos") Integer[] bbsNos, @Param("teacherNo") Integer teacherNo);
@@ -22,4 +23,6 @@ public interface BbsMapper {
     BbsDetailInfoDAO getBbsDetailInfo(@Param("bbsNo") Integer bbsNo);
 
     List<BbsFileDetailDTO> getBbsFileList(@Param("bbsNo") Integer bbsNo);
+
+    void deleteBbsFileInfo(@Param("bbsNo") Integer bbsNo, @Param("filename") String filename);
 }

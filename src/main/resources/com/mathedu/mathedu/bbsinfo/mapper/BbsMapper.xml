@@ -6,6 +6,18 @@
         INSERT INTO bbs_info(bbs_title, bbs_content, bbs_teacher_seq, bbs_class_seq)
         VALUES(#{title}, #{content}, #{teacherNo}, #{classNo});
     </insert>
+    <update id="updateBbs">
+        UPDATE bbs_info
+        SET
+        bbs_seq = #{bbsNo}
+        <if test="bbs.title != null">, bbs_title=#{bbs.title}</if>
+        <if test="bbs.content != null">, bbs_content=#{bbs.content}</if>
+        <if test="bbs.teacherNo != null">, bbs_teacher_seq=#{bbs.teacherNo}</if>
+        <if test="bbs.classNo != null">, bbs_class_seq=#{bbs.classNo}</if>
+        <if test="bbs.category != null">, bbs_category=#{bbs.category}</if>
+        WHERE bbs_seq = #{bbsNo};
+
+    </update>
     <insert id="insertBbsFileInfos">
         INSERT INTO mathedu.bbs_info_file(bfile_name, bfile_bbs_seq)
         VALUES
@@ -56,4 +68,9 @@
         from bbs_info_file
         where bfile_bbs_seq = #{bbsNo}
     </select>
+
+    <delete id="deleteBbsFileInfo">
+        delete from bbs_info_file
+        where bfile_name = #{filename} and bfile_bbs_seq = #{bbsNo}
+    </delete>
 </mapper>

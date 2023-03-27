@@ -35,6 +35,27 @@ public class NoticeService {
         return NoticeInsertResponseDAO.builder().noticeNo(notice.getNo()).status(true).message("공지사항을 등록했습니다.").code(HttpStatus.OK).build();
     }
 
+    public NoticeInsertResponseDAO updateNotice(NoticeInsertDAO data, Integer noticeNo) throws Exception {
+        if(noticeMapper.getNoticeDetailInfo(noticeNo) == null) {
+            return NoticeInsertResponseDAO.builder().noticeNo(0).status(false).message("공지사항을 찾을 수 없습니다.").code(HttpStatus.BAD_REQUEST).build();
+        }
+        NoticeInfoDAO notice = NoticeInfoDAO.builder()
+                .title(data.getTitle())
+                .content(data.getContent())
+                .teacherNo(data.getTeacherNo())
+                .classNo(data.getClassNo())
+                .build();
+
+        if(data.getFiles() != null) {
+            List<String> files = fileService.saveBoardFiles("notice", data.getFiles());
+            noticeMapper.insertNoticeFileInfos(files, noticeNo);
+        }
+
+        noticeMapper.updateNotice(notice, noticeNo);
+        return NoticeInsertResponseDAO.builder()
+                .noticeNo(noticeNo).status(false).message("공지사항을 수정했습니다.").code(HttpStatus.OK).build();
+    }
+
     public NoticeResponseDAO deleteNotice(Integer[] noticeNos, Integer teacherNo) {
         noticeMapper.deleteNotice(noticeNos, teacherNo);
 
@@ -95,5 +116,14 @@ public class NoticeService {
             response.setFiles(noticeMapper.getNoticeFileList(noticeNo));
         }
         return response;
+    }
+
+    public NoticeResponseDAO deleteNoticeFile(Integer noticeNo, String filename) {
+        noticeMapper.deleteNoticeFileInfo(noticeNo, filename);
+        return NoticeResponseDAO.builder()
+                .status(true)
+                .message("공지사항 파일을 삭제했습니다.")
+                .code(HttpStatus.OK)
+                .build();
     }
 }

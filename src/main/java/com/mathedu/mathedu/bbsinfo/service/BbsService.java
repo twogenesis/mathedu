@@ -5,6 +5,8 @@ import com.mathedu.mathedu.bbsinfo.dao.request.BbsInfoDAO;
 import com.mathedu.mathedu.bbsinfo.dao.request.BbsInsertDAO;
 import com.mathedu.mathedu.bbsinfo.dao.response.*;
 import com.mathedu.mathedu.bbsinfo.mapper.BbsMapper;
+import com.mathedu.mathedu.bbsinfo.dao.response.BbsInsertResponseDAO;
+import com.mathedu.mathedu.bbsinfo.dao.response.BbsResponseDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,28 @@ public class BbsService {
             List<String> files = fileService.saveBoardFiles("bbs", data.getFiles());
             bbsMapper.insertBbsFileInfos(files, bbs.getNo());
         }
-        return BbsInsertResponseDAO.builder().bbsNo(bbs.getNo()).status(true).message("공지사항을 등록했습니다.").code(HttpStatus.OK).build();
+        return BbsInsertResponseDAO.builder().bbsNo(bbs.getNo()).status(true).message("자료실 글을 등록했습니다.").code(HttpStatus.OK).build();
+    }
+
+    public BbsInsertResponseDAO updateBbs(BbsInsertDAO data, Integer bbsNo) throws Exception {
+        if(bbsMapper.getBbsDetailInfo(bbsNo) == null) {
+            return BbsInsertResponseDAO.builder().bbsNo(0).status(false).message("자료실 글을 찾을 수 없습니다.").code(HttpStatus.BAD_REQUEST).build();
+        }
+        BbsInfoDAO bbs = BbsInfoDAO.builder()
+                .title(data.getTitle())
+                .content(data.getContent())
+                .teacherNo(data.getTeacherNo())
+                .classNo(data.getClassNo())
+                .build();
+
+        if(data.getFiles() != null) {
+            List<String> files = fileService.saveBoardFiles("bbs", data.getFiles());
+            bbsMapper.insertBbsFileInfos(files, bbsNo);
+        }
+
+        bbsMapper.updateBbs(bbs, bbsNo);
+        return BbsInsertResponseDAO.builder()
+                .bbsNo(bbsNo).status(false).message("자료실 글을 수정했습니다.").code(HttpStatus.OK).build();
     }
 
     public BbsResponseDAO deleteBbs(Integer[] bbsNos, Integer teacherNo) {
@@ -38,7 +61,7 @@ public class BbsService {
 
         return BbsResponseDAO.builder()
                 .status(true)
-                .message("공지사항을 삭제했습니다.")
+                .message("자료실 글을 삭제했습니다.")
                 .code(HttpStatus.OK)
                 .build();
     }
@@ -93,5 +116,14 @@ public class BbsService {
             response.setFiles(bbsMapper.getBbsFileList(bbsNo));
         }
         return response;
+    }
+
+    public BbsResponseDAO deleteBbsFile(Integer bbsNo, String filename) {
+        bbsMapper.deleteBbsFileInfo(bbsNo, filename);
+        return BbsResponseDAO.builder()
+                .status(true)
+                .message("자료실 글 파일을 삭제했습니다.")
+                .code(HttpStatus.OK)
+                .build();
     }
 }

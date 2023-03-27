@@ -12,8 +12,8 @@ import java.util.List;
 @Mapper
 public interface NoticeMapper {
     void insertNotice(NoticeInfoDAO data);
+    void updateNotice(@Param("notice") NoticeInfoDAO notice, @Param("noticeNo") Integer noticeNo);
     void insertNoticeFileInfos(@Param("files") List<String> files, @Param("noticeNo") Integer noticeNo);
-
     void deleteNotice(@Param("noticeNos") Integer[] noticeNos, @Param("teacherNo") Integer teacherNo);
 
     Integer getTotalNoticeCount(@Param("keyword") String keyword);
@@ -22,4 +22,6 @@ public interface NoticeMapper {
     NoticeDetailInfoDAO getNoticeDetailInfo(@Param("noticeNo") Integer noticeNo);
 
     List<NoticeFileDetailDTO> getNoticeFileList(@Param("noticeNo") Integer noticeNo);
+
+    void deleteNoticeFileInfo(@Param("noticeNo") Integer noticeNo, @Param("filename") String filename);
 }

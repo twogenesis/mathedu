@@ -23,6 +23,12 @@ public class NoticeAPIController {
         return new ResponseEntity<>(response, response.getCode());
     }
 
+    @PatchMapping("/{noticeNo}")
+    public ResponseEntity<NoticeInsertResponseDAO> updateNotice(NoticeInsertDAO data, @PathVariable Integer noticeNo) throws Exception {
+        NoticeInsertResponseDAO response = noticeService.updateNotice(data, noticeNo);
+        return new ResponseEntity<>(response, response.getCode());
+    }
+
     @DeleteMapping("/{noticeNos}/{teacherNo}")
     public ResponseEntity<NoticeResponseDAO> deleteNotice(@PathVariable Integer[] noticeNos, @PathVariable Integer teacherNo) {
         NoticeResponseDAO response = noticeService.deleteNotice(noticeNos, teacherNo);
@@ -40,6 +46,12 @@ public class NoticeAPIController {
     @GetMapping("/detail/{noticeNo}")
     public ResponseEntity<NoticeDetailResponseDAO> getNoticeDetailInfo(@PathVariable Integer noticeNo) {
         NoticeDetailResponseDAO response = noticeService.getNoticeDetailInfo(noticeNo);
+        return new ResponseEntity<>(response, response.getCode());
+    }
+
+    @DeleteMapping("/file/{noticeNo}/{filename}")
+    public ResponseEntity<NoticeResponseDAO> deleteNoticeFile(@PathVariable Integer noticeNo, @PathVariable String filename) {
+        NoticeResponseDAO response = noticeService.deleteNoticeFile(noticeNo, filename);
         return new ResponseEntity<>(response, response.getCode());
     }
 }

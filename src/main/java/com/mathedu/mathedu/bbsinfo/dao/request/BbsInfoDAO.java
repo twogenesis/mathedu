@@ -15,4 +15,5 @@ public class BbsInfoDAO {
     private String content;
     private Integer teacherNo;
     private Integer classNo;
+    private String category;
 }

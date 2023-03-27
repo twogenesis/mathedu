@@ -15,4 +15,5 @@ public class NoticeInfoDAO {
     private String content;
     private Integer teacherNo;
     private Integer classNo;
+    private String category;
 }

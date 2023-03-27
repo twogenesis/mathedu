@@ -3,9 +3,21 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mathedu.mathedu.noticeinfo.mapper.NoticeMapper">
     <insert id="insertNotice" parameterType="com.mathedu.mathedu.noticeinfo.dao.request.NoticeInfoDAO" useGeneratedKeys="true" keyProperty="no" keyColumn="notice_seq">
-        INSERT INTO notice_info(notice_title, notice_content, notice_teacher_seq, notice_class_seq)
-        VALUES(#{title}, #{content}, #{teacherNo}, #{classNo});
+        INSERT INTO notice_info(notice_title, notice_content, notice_teacher_seq, notice_class_seq, notice_category)
+        VALUES(#{title}, #{content}, #{teacherNo}, #{classNo}, #{category});
     </insert>
+    <update id="updateNotice">
+        UPDATE notice_info
+        SET
+            notice_seq = #{noticeNo}
+        <if test="notice.title != null">, notice_title=#{notice.title}</if>
+        <if test="notice.content != null">, notice_content=#{notice.content}</if>
+        <if test="notice.teacherNo != null">, notice_teacher_seq=#{notice.teacherNo}</if>
+        <if test="notice.classNo != null">, notice_class_seq=#{notice.classNo}</if>
+        <if test="notice.category != null">, notice_category=#{notice.category}</if>
+        WHERE notice_seq = #{noticeNo};
+
+    </update>
     <insert id="insertNoticeFileInfos">
         INSERT INTO mathedu.notice_info_file(nfile_name, nfile_notice_seq)
         VALUES
@@ -56,4 +68,9 @@
         from notice_info_file
         where nfile_notice_seq = #{noticeNo}
     </select>
+
+    <delete id="deleteNoticeFileInfo">
+        delete from notice_info_file
+        where nfile_name = #{filename} and nfile_notice_seq = #{noticeNo}
+    </delete>
 </mapper>
