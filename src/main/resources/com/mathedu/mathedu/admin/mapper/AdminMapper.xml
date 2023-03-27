@@ -11,4 +11,26 @@
     <insert id="addAdminInfo">
         insert into admin_info(admin_id, admin_pwd) values (#{id}, #{pwd})
     </insert>
+    <select id="getAdminInfoByAdminNo" resultType="com.mathedu.mathedu.admin.dao.response.AdminInfoDAO">
+        select admin_id as id, admin_status as status
+        from admin_info where admin_seq = #{adminNo}
+    </select>
+    <update id="updateAdminStatus">
+        update admin_info set admin_status = #{status} where admin_seq = #{adminNo}
+    </update>
+    <insert id="insertTeacherInfo">
+        INSERT INTO teacher_info(teacher_id, teacher_pwd, teacher_name, teacher_img) VALUES(#{id},#{pwd},#{name},#{imageFile});
+    </insert>
+    <select id="getTeacherList" resultType="com.mathedu.mathedu.admin.dao.response.AdminTeacherInfoDAO">
+        select teacher_id as id, teacher_name as name, CONCAT('/file/teacher/',teacher_img) as imageFile,
+               teacher_status as status, teacher_regdt as regDt
+        from teacher_info where teacher_name like '%${keyword}%'
+        limit 10 offset #{offset}
+    </select>
+    <select id="isExistTeacherId" resultType="java.lang.Boolean">
+        select count(*) = 1 from teacher_info where teacher_id = #{teacherId}
+    </select>
+    <select id="getTeacherTotalCnt" resultType="java.lang.Integer">
+        select count(*) from teacher_info where teacher_name like '%${keyword}%'
+    </select>
 </mapper>

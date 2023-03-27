@@ -36,6 +36,8 @@ mathedu:
   filepath:
     notice: /home/mathedu/notice
     bbs: /home/mathedu/bbs
+    teacher: /home/mathedu/image/teacher
+    student: /home/mathedu/image/student
   apiinfo:
     version: 0.0.1
     title: Mathedu API Docs
