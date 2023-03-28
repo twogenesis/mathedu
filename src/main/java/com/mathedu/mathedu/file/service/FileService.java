@@ -44,7 +44,9 @@ public class FileService {
         String ext = split[split.length-1];
         fileName = generateRandomStr() + "." + ext;
         targetLocation = targetLocation.resolve(fileName);
-        Files.copy(img.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        InputStream fstream = img.getInputStream();
+        Files.copy(fstream, targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        fstream.close();
         return fileName;
     }
 

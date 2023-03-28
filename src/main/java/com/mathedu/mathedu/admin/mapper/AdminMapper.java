@@ -43,4 +43,8 @@ public interface AdminMapper {
             @Param("keyword") String keyword,
             @Param("searchType") String searchType
     );
+    void addTeacherToClass(@Param("classNo") Integer classNo,@Param("teacherNo") Integer teacherNo);
+    Boolean isAlreadyAssignTeacher(@Param("classNo") Integer classNo,@Param("teacherNo") Integer teacherNo);
+    void updateClassTeacher(@Param("classConnNo") Integer classConnNo, @Param("teacherNo") Integer teacherNo);
+    Boolean getConnInfoBySeq(@Param("classConnNo") Integer classConnNo);
 }

@@ -95,4 +95,20 @@
         ${order}
         limit 10 offset #{offset};
     </select>
+    <insert id="addTeacherToClass">
+        INSERT INTO teacher_class_conn
+            (tcc_teacher_seq, tcc_class_seq)
+        VALUES(#{teacherNo}, #{classNo})
+    </insert>
+    <select id="isAlreadyAssignTeacher" resultType="java.lang.Boolean">
+        select count(*) = 1 from teacher_class_conn
+        where tcc_teacher_seq = #{teacherNo} and tcc_class_seq = #{classNo}
+    </select>
+    <update id="updateClassTeacher">
+        update teacher_class_conn set tcc_teacher_seq = #{teacherNo}
+        where tcc_seq = #{classConnNo}
+    </update>
+    <select id="getConnInfoBySeq" resultType="java.lang.Boolean">
+        select count(*) = 1 from teacher_class_conn where tcc_seq = #{classConnNO}
+    </select>
 </mapper>

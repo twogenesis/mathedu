@@ -11,6 +11,7 @@ import com.mathedu.mathedu.utils.AESAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -299,6 +300,42 @@ public class AdminService {
                 .totalCount(totalCnt)
                 .currentPage(page)
                 .list(adminMapper.getClassList(orderref, order, (page-1)*10, keyword, searchType))
+                .build();
+    }
+
+    public AdminAPIResponseDAO addTeacherToClass(Integer classNo,Integer teacherNo) {
+        if(adminMapper.isAlreadyAssignTeacher(classNo, teacherNo)) {
+            return AdminAPIResponseDAO.
+                    builder()
+                    .status(false)
+                    .message("이미 반에 배정된 선생님입니다.")
+                    .code(HttpStatus.OK)
+                    .build();
+        }
+        adminMapper.addTeacherToClass(classNo, teacherNo);
+        return AdminAPIResponseDAO.
+                builder()
+                .status(true)
+                .message("선생님 배정을 완료했습니다.")
+                .code(HttpStatus.OK)
+                .build();
+    }
+
+    public AdminAPIResponseDAO updateClassTeacher(Integer classConnNo,Integer teacherNo) {
+        if(!adminMapper.getConnInfoBySeq(classConnNo)) {
+            return AdminAPIResponseDAO.
+                    builder()
+                    .status(false)
+                    .message("반 배정 정보가 존재하지 않습니다.")
+                    .code(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+        adminMapper.updateClassTeacher(classConnNo, teacherNo);
+        return AdminAPIResponseDAO.
+                builder()
+                .status(true)
+                .message("선생님 변경을 완료했습니다.")
+                .code(HttpStatus.OK)
                 .build();
     }
 }

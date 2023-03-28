@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mathedu.mathedu.studentinfo.mapper.StudentMapper">
+    <insert id="insertStudentInfo">
+        INSERT INTO student_info
+        (stu_id, stu_pwd, stu_name, stu_birth_year, stu_birth_month, stu_birth_date, stu_school_seq, stu_grade, stu_phone, stu_alternate_phone, stu_image, stu_class_seq, stu_address)
+        VALUES(#{id}, #{pwd}, #{name}, #{birthYear}, #{birthMonth}, #{birthDate}, #{schoolNo}, #{schoolGrade}, #{phoneNo}, #{alternatePhone}, #{imagefile}, #{classNo}, #{address});
+    </insert>
+    <select id="isExistStudentId" resultType="java.lang.Boolean">
+        select count(*) = 1 from student_info where stu_id = #{id}
+    </select>
+    <update id="updateStudentInfo">
+        UPDATE student_info
+        SET
+            stu_id=#{id}
+            <if test="data.name != null">, stu_name=#{data.name}</if>
+            <if test="data.pwd != null">, stu_pwd=#{data.pwd}</if>
+            <if test="data.birthYear != null">, stu_birth_year=#{data.birthYear}</if>
+            <if test="data.birthMonth != null">, stu_birth_month=#{data.birthMonth}</if>
+            <if test="data.birthDate != null">, stu_birth_date=#{data.birthDate}</if>
+            <if test="data.schoolNo != null">, stu_school_seq=#{data.schoolNo}</if>
+            <if test="data.schoolGrade != null">, stu_grade=#{data.schoolGrade}</if>
+            <if test="data.phoneNo != null">, stu_phone=#{data.phoneNo}</if>
+            <if test="data.alternatePhone != null">, stu_alternate_phone=#{data.alternatePhone}</if>
+            <if test="data.address != null">, stu_address=#{data.address}</if>
+            <if test="data.image != null">, stu_image=#{data.image}</if>
+        WHERE stu_id = #{id}
+    </update>
+    <delete id="deleteStudentInfo">
+        delete from student_info where stu_id = #{id}
+    </delete>
+</mapper>
