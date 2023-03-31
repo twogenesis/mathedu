@@ -66,12 +66,12 @@ public class BbsService {
                 .build();
     }
 
-    public BbsListResponseDAO getBbsList(Integer classNo, String order, String keyword, Integer page) {
+    public BbsListResponseDAO getBbsList(Integer classNo, Integer teacherNo, String order, String keyword, Integer page) {
         if(keyword == null) keyword = "";
         if(page == null) page = 1;
-        Integer totalCnt = bbsMapper.getTotalBbsCount(keyword);
+        Integer totalCnt = bbsMapper.getTotalBbsCount(classNo, keyword);
         Integer totalPage = (int)(Math.ceil(totalCnt / 10.0));
-        List<BbsSummaryDAO> list = bbsMapper.getBbsList(classNo, order, keyword, (page-1)*10);
+        List<BbsSummaryDAO> list = bbsMapper.getBbsList(classNo, teacherNo, order, keyword, (page-1)*10);
         return BbsListResponseDAO.builder()
                 .status(true)
                 .totalPage(totalPage)

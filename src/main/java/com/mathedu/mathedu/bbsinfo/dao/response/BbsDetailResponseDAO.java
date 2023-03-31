@@ -31,7 +31,7 @@ public class BbsDetailResponseDAO {
     @ApiModelProperty(name = "authorName", example = "선생님", notes = "작성자 명", required = true)
     private String authorName;
     @ApiModelProperty(name = "files", notes = "글에 등록된 파일 목록", required = true)
-    private List<BbsFileDetailDTO> files;
+    private List<BbsFileDetailDAO> files;
     @ApiModelProperty(name = "prevPost", example = "이전 글 간략 정보", notes = "이전 글 정보 (null일 경우 정보 없음)", required = false)
     private BbsTinyInfo prevPost;
     @ApiModelProperty(name = "nextPost", example = "다음 글 간략 정보", notes = "다음 글 정보 (null일 경우 정보 없음)", required = false)

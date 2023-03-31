@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mathedu.mathedu.classinfo.mapper.ClassInfoMapper">
+    <select id="getClassCountByTeacherNo" resultType="java.lang.Integer">
+        select count(*) from teacher_class_conn where tcc_teacher_seq = #{teacherNo}
+    </select>
+    <select id="getClassListByTeacherNo" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassSummaryInfoDAO">
+        select
+            b.class_seq as classNo, b.class_name as name,
+            b.class_days as days, b.class_opendt as opendt,
+            b.class_closedt as closedt
+        from teacher_class_conn a inner join class_info b
+        on a.tcc_class_seq = b.class_seq
+        where tcc_teacher_seq = #{teacherNo} and b.class_name like '%${keyword}%'
+        order by b.class_seq desc
+        limit 10 offset #{offset}
+    </select>
+    <select id="getClassInfo" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassInfoDAO">
+        select
+            seq as no, title as name, grade, teacher, days,
+            opendt, closedt, DATEDIFF(closedt, opendt) as totaldate,
+            starttime, endtime
+        from class_detail_view
+        where seq = #{classNo}
+    </select>
+    <select id="getClassStudentList" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassStudentDAO">
+        select
+            stu_seq as no, CONCAT('/file/student/',stu_image) as img,
+            stu_name as name, stu_phone as phone, stu_alternate_phone as alternatephone,
+            stu_address as address
+        from student_info where stu_class_seq = #{classNo}
+    </select>
+    <insert id="insertStudentExamScore">
+        insert into exam_scores(exscore_exam_seq, exscore_stu_seq, exscore_score)
+        values (
+           #{examNo}, (select stu_seq from student_info where stu_id=#{studentId}), #{score}
+       )
+    </insert>
+    <select id="isExistExamScore" resultType="java.lang.Boolean">
+        select count(*) from exam_scores where exscore_exam_seq = #{examNo} and exscore_stu_seq = (
+            select stu_seq from student_info where stu_id = #{studentId}
+        )
+    </select>
+    <update id="updateStudentExamScore">
+        update exam_scores set exscore_score = #{score}
+        where exscore_seq = #{examNo} and exscore_stu_seq = (
+            select stu_seq from student_info where stu_id = #{studentId}
+        )
+    </update>
+    <select id="getExamScoreList" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassExamScoreDAO">
+        select *, rank() over (order by score desc) as srank from (
+          select stu_id as stuno, stu_name as stuname,
+                 exscore_score as score,
+                 exscore_score -
+                 (
+                     select FLOOR(IFNULL(avg(exscore_score), 0))
+                     from exam_scores
+                     where exscore_exam_seq = #{examNo} and exscore_score >= 0
+                 ) as diff
+          from exam_scores a inner join student_info b
+          on a.exscore_stu_seq = b.stu_seq
+          where exscore_exam_seq = #{examNo} and exscore_score >= 0
+      ) a
+      order by ${sort} ${order}
+    </select>
+    <select id="getMaxScoreStudent" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassExamStudentTinyInfoDAO">
+        select stu_name, MAX(exscore_score) as score from (
+          select * from exam_scores where exscore_exam_seq = #{examNo}
+        ) a inner join student_info b on a.exscore_stu_seq = b.stu_seq;
+    </select>
+    <select id="getMinScoreStudent" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassExamStudentTinyInfoDAO">
+        select stu_name, MIN(exscore_score) as score from (
+          select * from exam_scores where exscore_exam_seq = #{examNo} and exscore_score >= 0
+        ) a inner join student_info b on a.exscore_stu_seq = b.stu_seq;
+    </select>
+    <select id="getExamAverageScore" resultType="java.lang.Integer">
+        select FLOOR(AVG(exscore_score)) from (
+            select * from exam_scores where exscore_exam_seq = #{examNo} and exscore_score >= 0
+        ) a
+    </select>
+    <select id="getScoreAreaData" resultType="java.lang.Integer">
+        <![CDATA[
+            select count(*) from exam_scores where exscore_exam_seq = #{examNo}
+            and exscore_score <= 100 and exscore_score >= 80
+            union all
+            select count(*) from exam_scores where exscore_exam_seq = #{examNo}
+            and exscore_score < 80 and exscore_score >= 60
+            union all
+            select count(*) from exam_scores where exscore_exam_seq = #{examNo}
+            and exscore_score < 60 and exscore_score >= 40
+            union all
+            select count(*) from exam_scores where exscore_exam_seq = #{examNo}
+            and exscore_score < 40 and exscore_score >= 20
+            union all
+            select count(*) from exam_scores where exscore_exam_seq = #{examNo}
+            and exscore_score < 20
+        ]]>
+    </select>
+</mapper>

@@ -2,11 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mathedu.mathedu.studentinfo.mapper.StudentMapper">
+    <select id="loginStudent" resultType="com.mathedu.mathedu.studentinfo.dao.response.StudentLoginInfoDAO">
+        select stu_seq as no, stu_id as id, stu_name as name  from student_info
+        where stu_id = #{id} and stu_pwd = #{pwd}
+    </select>
     <insert id="insertStudentInfo">
         INSERT INTO student_info
         (stu_id, stu_pwd, stu_name, stu_birth_year, stu_birth_month, stu_birth_date, stu_school_seq, stu_grade, stu_phone, stu_alternate_phone, stu_image, stu_class_seq, stu_address)
         VALUES(#{id}, #{pwd}, #{name}, #{birthYear}, #{birthMonth}, #{birthDate}, #{schoolNo}, #{schoolGrade}, #{phoneNo}, #{alternatePhone}, #{imagefile}, #{classNo}, #{address});
     </insert>
+    <select id="isValidOldPassword" resultType="java.lang.Boolean">
+        select count(*) = 1 from student_info where stu_id = #{id} and stu_pwd = #{pwd}
+    </select>
+    <update id="updateStudentPassword">
+        update student_info set stu_pwd = #{pwd.newPwd} where stu_id = #{id} and stu_pwd = #{pwd.oldPwd}
+    </update>
+
     <select id="isExistStudentId" resultType="java.lang.Boolean">
         select count(*) = 1 from student_info where stu_id = #{id}
     </select>
@@ -30,4 +41,117 @@
     <delete id="deleteStudentInfo">
         delete from student_info where stu_id = #{id}
     </delete>
+    <select id="getRecentExamScore" resultType="com.mathedu.mathedu.studentinfo.dao.response.StudentRecentScoreDAO">
+        select
+            score, srank, DATE(exam_date) as testDt,
+            (select count(*) from exam_scores where exscore_score = score) - 1 as tieCnt,
+            (select count(*) from student_info where stu_class_seq = classNo) as totalStudents
+        from (
+            select *, rank() over (order by score desc) as srank from (
+            select stu_id as stuno, stu_name as stuname,
+            exscore_score as score, stu_class_seq as classNo,
+            exscore_exam_seq as examNo,
+            exscore_score -
+            (
+                select FLOOR(IFNULL(avg(exscore_score), 0))
+                from exam_scores
+                where exscore_exam_seq = (
+                    select exam_seq from exam_scores a inner join exam_info b
+                    on a.exscore_exam_seq = b.exam_seq where exam_type = #{type}
+                    order by exam_date desc limit 1
+                )
+                and exscore_score >= 0
+            ) as diff
+                from exam_scores a inner join student_info b
+                on a.exscore_stu_seq = b.stu_seq
+                where exscore_exam_seq = (
+                    select exam_seq from exam_scores a inner join exam_info b
+                    on a.exscore_exam_seq = b.exam_seq where exam_type = #{type}
+                    order by exam_date desc limit 1
+                )
+            ) a
+        ) b inner join exam_info c
+        on b.examNo = c.exam_seq
+        where stuno = #{stuId};
+    </select>
+    <select id="getStudentDetailInfo" resultType="com.mathedu.mathedu.studentinfo.dao.response.StudentBasicInfoDAO">
+        <![CDATA[
+            select
+            stu_name as name, CONCAT('/file/student/', stu_image) as profileImgURL,
+            CONCAT(
+                stu_birth_year, '-',
+                CONCAT(if(stu_birth_month < 10, '0', ''), stu_birth_month), '-',
+                CONCAT(if(stu_birth_date < 10, '0', ''), stu_birth_date)
+            ) as birth, stu_phone as phone, class_name as className, school_name as school,
+            stu_id as id, stu_alternate_phone as alternatePhone, class_days as classDays,
+            class_starttime as startTime, class_endtime as endtime, class_grade as grade,
+            DATE(stu_regdt) as regDt, stu_address as address,
+            (
+                select teacher_name from teacher_class_conn a inner join teacher_info b
+                on a.tcc_teacher_seq = b.teacher_seq
+                where tcc_class_seq = class_seq
+            ) as teacher
+            from student_info a
+            inner join class_info b on a.stu_class_seq = b.class_seq
+            inner join school_info c on a.stu_school_seq = c.school_seq
+            where stu_id = #{stuId};
+        ]]>
+    </select>
+    <select id="getStudentTestInfo" resultType="com.mathedu.mathedu.studentinfo.dao.response.StudentExamTableDataDAO">
+        select DATE(exam_date) as examDt, exscore_score as score,
+        (
+           select ifnull(floor(avg(exscore_score)) ,0) from exam_scores where exscore_exam_seq = b.exam_seq
+        ) as classAvg,
+        (
+           select floor(avg(exscore_score)) as top30pAvg from
+               (
+                   select *, rank() over (order by exscore_score desc) as srank from exam_scores where
+                       exscore_exam_seq = exam_seq
+               ) a
+           where srank between 1 and (
+               select top30pCnt from top30pCntView where examNo = exam_seq
+           )
+        ) as top30pAvg,
+        (
+           select count(*) from exam_scores where exscore_exam_seq = b.exam_seq and exscore_score >= 0
+        ) as attend
+        from exam_scores a inner join exam_info b
+        on a.exscore_exam_seq = b.exam_seq
+        where exscore_stu_seq = (
+            select stu_seq from student_info where stu_id = #{stuId}
+        )
+        and exam_type = #{type}
+        and YEAR(exam_date) = #{year}
+        <if test="month != null">
+            and MONTH(exam_date) = #{month}
+        </if>
+        and exscore_score >= 0
+        order by examDt ${order}
+    </select>
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

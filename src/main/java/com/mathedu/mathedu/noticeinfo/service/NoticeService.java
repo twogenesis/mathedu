@@ -66,12 +66,12 @@ public class NoticeService {
                 .build();
     }
 
-    public NoticeListResponseDAO getNoticeList(Integer classNo, String order, String keyword, Integer page) {
+    public NoticeListResponseDAO getNoticeList(Integer classNo, Integer teacherNo, String order, String keyword, Integer page) {
         if(keyword == null) keyword = "";
         if(page == null) page = 1;
-        Integer totalCnt = noticeMapper.getTotalNoticeCount(keyword);
+        Integer totalCnt = noticeMapper.getTotalNoticeCount(classNo, keyword);
         Integer totalPage = (int)(Math.ceil(totalCnt / 10.0));
-        List<NoticeSummaryDAO> list = noticeMapper.getNoticeList(classNo, order, keyword, (page-1)*10);
+        List<NoticeSummaryDAO> list = noticeMapper.getNoticeList(classNo, teacherNo, order, keyword, (page-1)*10);
         return NoticeListResponseDAO.builder()
                 .status(true)
                 .totalPage(totalPage)

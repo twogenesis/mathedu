@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NoticeFileDetailDTO {
+public class NoticeFileDetailDAO {
     @ApiModelProperty(name = "fileName", example = "fqweuioyhsdxcyv.pdf", notes = "파일 명", required = true)
     private String fileName;
     @ApiModelProperty(name = "fileType", example = "pdf", notes = "파일 타입", required = true)

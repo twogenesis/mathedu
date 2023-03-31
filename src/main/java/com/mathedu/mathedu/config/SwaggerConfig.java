@@ -29,7 +29,10 @@ public class SwaggerConfig implements WebMvcConfigurer {
                         new Tag("관리자 기능", "관리자 기능 API (반, 선생님, 관리자)"),
                         new Tag("자료실 관리", "자료실 CRUD API"),
                         new Tag("공지사항 관리", "공지사항 CRUD API"),
-                        new Tag("학생정보 관리", "학생정보 CRUD API")
+                        new Tag("학생정보 관리", "학생정보 CRUD API"),
+                        new Tag("선생님 정보", "선생님 정보 API"),
+                        new Tag("시험 정보 관리", "시험 정보 CRUD API"),
+                        new Tag("반 정보", "반 정보 API - 시험 점수/반 학생리스트")
                 )
                 .apiInfo(apiInfo());
     }
@@ -38,7 +41,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
         return new ApiInfoBuilder()
                 .title("Mathedu API Documentation")
                 .description(description)
-                .version("0.5")
+                .version("0.9.2")
                 .build();
     }
     @Override

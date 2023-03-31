@@ -51,14 +51,15 @@ public class BbsAPIController {
     }
 
     @ApiOperation(value = "글 리스트 조회", notes = "글 리스트 조회 API")
-    @GetMapping("/{classNo}/{order}")
+    @GetMapping("/{classNo}/{teacherNo}/{order}")
     public ResponseEntity<BbsListResponseDAO> getBbsList(
-            @PathVariable @ApiParam(value = "반의 DB상의 시퀀스 번호", required = true) Integer classNo,
+            @PathVariable @ApiParam(value = "반의 DB상의 시퀀스 번호 (0 입력 시 전체 조회)", required = true) Integer classNo,
+            @PathVariable @ApiParam(value = "선생님의 DB상의 시퀀스 번호", required = true) Integer teacherNo,
             @PathVariable @ApiParam(value = "정렬 기준 (asc,desc)", required = true) String order,
-            @RequestParam @ApiParam(value = "검색어 (미입력 시 검색하지 않음)", required = true) @Nullable String keyword,
-            @RequestParam @ApiParam(value = "페이지 (미입력 시 첫번째 페이지 조회)", required = true) @Nullable Integer page
+            @RequestParam @ApiParam(value = "검색어 (미입력 시 검색하지 않음)", required = false) @Nullable String keyword,
+            @RequestParam @ApiParam(value = "페이지 (미입력 시 첫번째 페이지 조회)", required = false) @Nullable Integer page
     ) {
-        BbsListResponseDAO response = bbsService.getBbsList(classNo, order, keyword, page);
+        BbsListResponseDAO response = bbsService.getBbsList(classNo, teacherNo, order, keyword, page);
         return new ResponseEntity<>(response, response.getCode());
     }
 

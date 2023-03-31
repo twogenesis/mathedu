@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mathedu.mathedu.examinfo.mapper.ExamInfoMapper">
+    <insert id="insertExamInfo">
+        insert into exam_info(exam_name, exam_date, exam_class_seq, exam_type)
+        values(#{name}, #{date}, #{classNo}, #{type})
+    </insert>
+    <select id="isExistExamInfo" resultType="java.lang.Boolean">
+        select count(*) = 1 from exam_info where exam_seq = #{examNo}
+    </select>
+    <update id="updateExamInfo">
+        update exam_info
+        set
+            exam_seq = #{examNo}
+            <if test="data.name != null">, exam_name = #{data.name}</if>
+            <if test="data.date != null">, exam_date = #{data.date}</if>
+            <if test="data.classNo != null">, exam_class_seq = #{data.classNo}</if>
+            <if test="data.type != null">, exam_type = #{data.type}</if>
+        where
+            exam_seq = #{examNo}
+    </update>
+</mapper>

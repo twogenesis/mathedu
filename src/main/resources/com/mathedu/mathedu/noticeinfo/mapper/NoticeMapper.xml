@@ -33,7 +33,9 @@
 
     <select id="getTotalNoticeCount" resultType="java.lang.Integer">
         select count(*) from notice_info where notice_title like '%${keyword}%'
-
+        <if test="classNo != 0">
+            and notice_class_seq = #{classNo}
+        </if>
     </select>
     <select id="getNoticeList" resultType="com.mathedu.mathedu.noticeinfo.dao.response.NoticeSummaryDAO">
         select
@@ -43,7 +45,11 @@
             notice_class_seq as classNo
         from notice_info a left outer join teacher_info b
         on a.notice_teacher_seq = b.teacher_seq
-        where notice_title like '%${keyword}%' and notice_class_seq = #{classNo}
+        where notice_title like '%${keyword}%'
+            and notice_teacher_seq = #{teacherNo}
+        <if test="classNo != 0">
+            and notice_class_seq = #{classNo}
+        </if>
         order by notice_regdt ${order}
         limit 10 offset ${offset}
     </select>
@@ -60,7 +66,7 @@
           from notice_info
       ) a inner join teacher_info b on a.authorNo = b.teacher_seq where no = #{noticeNo}
     </select>
-    <select id="getNoticeFileList" resultType="com.mathedu.mathedu.noticeinfo.dao.response.NoticeFileDetailDTO">
+    <select id="getNoticeFileList" resultType="com.mathedu.mathedu.noticeinfo.dao.response.NoticeFileDetailDAO">
         select
             nfile_name as fileName,
             SUBSTRING_INDEX(nfile_name, '.', -1) as fileType,

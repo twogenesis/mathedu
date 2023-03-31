@@ -33,7 +33,9 @@
 
     <select id="getTotalBbsCount" resultType="java.lang.Integer">
         select count(*) from bbs_info where bbs_title like '%${keyword}%'
-
+        <if test="classNo != 0">
+            and bbs_class_seq = #{classNo}
+        </if>
     </select>
     <select id="getBbsList" resultType="com.mathedu.mathedu.bbsinfo.dao.response.BbsSummaryDAO">
         select
@@ -43,7 +45,11 @@
             bbs_class_seq as classNo
         from bbs_info a left outer join teacher_info b
         on a.bbs_teacher_seq = b.teacher_seq
-        where bbs_title like '%${keyword}%' and bbs_class_seq = #{classNo}
+        where bbs_title like '%${keyword}%'
+            and bbs_teacher_seq = #{teacherNo}
+        <if test="classNo != 0">
+            and bbs_class_seq = #{classNo}
+        </if>
         order by bbs_regdt ${order}
         limit 10 offset ${offset}
     </select>
@@ -60,7 +66,7 @@
           from bbs_info
       ) a inner join teacher_info b on a.authorNo = b.teacher_seq where no = #{bbsNo}
     </select>
-    <select id="getBbsFileList" resultType="com.mathedu.mathedu.bbsinfo.dao.response.BbsFileDetailDTO">
+    <select id="getBbsFileList" resultType="com.mathedu.mathedu.bbsinfo.dao.response.BbsFileDetailDAO">
         select
             bfile_name as fileName,
             SUBSTRING_INDEX(bfile_name, '.', -1) as fileType,

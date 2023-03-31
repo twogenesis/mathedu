@@ -2,11 +2,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mathedu.mathedu.teacherinfo.mapper.TeacherMapper">
-    <select id="findTeacherInfoById" resultType="com.mathedu.mathedu.teacherinfo.dao.response.TeacherInfoDTO">
+    <select id="findTeacherInfoById" resultType="com.mathedu.mathedu.teacherinfo.dao.response.TeacherInfoDAO">
         select teacher_seq as no, teacher_id as id, CONCAT('/file/teacher/',teacher_img) as imageURL,
         teacher_status as status, teacher_regdt as regdt, teacher_name as name from teacher_info where teacher_id = #{teacherId}
     </select>
-    <select id="getStudentListByTeacherNo" resultType="com.mathedu.mathedu.teacherinfo.dao.response.TeacherStudentInfoDTO">
-        select * from student_info where stu_teacher_seq = #{no} limit 10 offset #{offset}
+    <select id="getStudentListByTeacherNo" resultType="com.mathedu.mathedu.teacherinfo.dao.response.TeacherStudentInfoDAO">
+        select
+            stu_seq as no, CONCAT('/file/student/',stu_image) as img,
+            stu_name as name, stu_phone as phone,
+            stu_alternate_phone as alternatephone, stu_address as address
+        from student_info a inner join class_info b
+            on a.stu_class_seq = b.class_seq
+            inner join teacher_info c
+            on b.class_teacher_seq = c.teacher_seq
+        where c.teacher_seq = #{no}
+        order by stu_seq desc
+        limit 10 offset #{offset}
+    </select>
+    <select id="getStudentCountByTeacherNo" resultType="java.lang.Integer">
+        select count(*) from student_info a inner join class_info b
+        on a.stu_class_seq = b.class_seq
+        inner join teacher_info c
+        on b.class_teacher_seq = c.teacher_seq
+        where c.teacher_seq = #{no}
+    </select>
+    <select id="loginTeacher" resultType="com.mathedu.mathedu.teacherinfo.dao.response.TeacherSummaryDAO">
+        select
+            teacher_seq as no, teacher_id as id, teacher_name as name,
+            CONCAT('/file/teacher/', teacher_img)
+        from teacher_info where teacher_id = #{id} and teacher_pwd = #{pwd}
+    </select>
+
+    <select id="getTeacherClassList" resultType="com.mathedu.mathedu.teacherinfo.dao.response.TeacherClassTinyInfoDAO">
+        select class_seq as no, class_name as name from
+        teacher_class_conn a inner join class_info b
+        on a.tcc_class_seq = b.class_seq
+        inner join teacher_info c
+        on a.tcc_teacher_seq = c.teacher_seq
+        where teacher_id = #{teacherId}
     </select>
 </mapper>
