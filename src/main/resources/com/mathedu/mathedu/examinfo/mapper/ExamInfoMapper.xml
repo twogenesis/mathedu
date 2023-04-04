@@ -51,7 +51,7 @@
             stu_seq as studentNo,
             stu_name as studentName,
             stu_id as studentId,
-            CONCAT('/files/student/', stu_image) as imgURL,
+            CONCAT('/file/student/', stu_image) as imgURL,
             class_seq as classNo,
             class_name as className
         from student_info a inner join class_info b

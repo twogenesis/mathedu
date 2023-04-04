@@ -67,14 +67,28 @@
       order by ${sort} ${order}
     </select>
     <select id="getMaxScoreStudent" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassExamStudentTinyInfoDAO">
-        select stu_name, MAX(exscore_score) as score from (
-          select * from exam_scores where exscore_exam_seq = #{examNo}
-        ) a inner join student_info b on a.exscore_stu_seq = b.stu_seq;
+        select stu_name as name, MAX(exscore_score) as score from (
+          select * from exam_scores where exscore_exam_seq = 27 and exscore_score >= 0
+        ) a inner join student_info b on a.exscore_stu_seq = b.stu_seq
+        where exscore_score = (
+            select MAX(exscore_score) from (
+               select * from exam_scores where exscore_exam_seq = 27 and exscore_score >= 0
+           ) b
+        )
+        order by stu_name asc
+        limit 1 offset 0;
     </select>
     <select id="getMinScoreStudent" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassExamStudentTinyInfoDAO">
-        select stu_name, MIN(exscore_score) as score from (
-          select * from exam_scores where exscore_exam_seq = #{examNo} and exscore_score >= 0
-        ) a inner join student_info b on a.exscore_stu_seq = b.stu_seq;
+        select stu_name as name, MIN(exscore_score) as score from (
+          select * from exam_scores where exscore_exam_seq = 27 and exscore_score >= 0
+        ) a inner join student_info b on a.exscore_stu_seq = b.stu_seq
+        where exscore_score = (
+            select MIN(exscore_score) from (
+               select * from exam_scores where exscore_exam_seq = 27 and exscore_score >= 0
+            ) b
+        )
+        order by stu_name asc
+        limit 1 offset 0;
     </select>
     <select id="getExamAverageScore" resultType="java.lang.Integer">
         select FLOOR(AVG(exscore_score)) from (
