@@ -47,4 +47,6 @@ public interface AdminMapper {
     Boolean isAlreadyAssignTeacher(@Param("classNo") Integer classNo,@Param("teacherNo") Integer teacherNo);
     void updateClassTeacher(@Param("classConnNo") Integer classConnNo, @Param("teacherNo") Integer teacherNo);
     Boolean getConnInfoBySeq(@Param("classConnNo") Integer classConnNo);
+
+    void insertClassTeacherConnInfo(@Param("teacherNo") Integer teacherNo, @Param("classNo") Integer classNo);
 }

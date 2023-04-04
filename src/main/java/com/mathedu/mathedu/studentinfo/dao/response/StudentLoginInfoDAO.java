@@ -17,4 +17,9 @@ public class StudentLoginInfoDAO {
     private String id;
     @ApiModelProperty(name = "name", example = "true", notes = "학생 이름", required = true)
     private String name;
+    @ApiModelProperty(name = "classNo", example = "1", notes = "학생 반의 DB상의 시퀀스", required = true)
+    private Integer classNo;
+    @ApiModelProperty(name = "teacherNo", example = "1", notes = "학생 반의 DB상의 시퀀스", required = true)
+    private Integer teacherNo;
+
 }

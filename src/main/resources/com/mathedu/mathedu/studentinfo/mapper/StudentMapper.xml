@@ -3,8 +3,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mathedu.mathedu.studentinfo.mapper.StudentMapper">
     <select id="loginStudent" resultType="com.mathedu.mathedu.studentinfo.dao.response.StudentLoginInfoDAO">
-        select stu_seq as no, stu_id as id, stu_name as name  from student_info
+        select stu_seq as no, stu_id as id, stu_name as name, stu_class_seq as classNo, tcc_teacher_seq as teacherNo
+        from student_info a inner join class_info b on a.stu_class_seq = b.class_seq
+        left outer join teacher_class_conn c on b.class_seq = c.tcc_class_seq
+        left outer join teacher_info d on c.tcc_teacher_seq = d.teacher_seq
         where stu_id = #{id} and stu_pwd = #{pwd}
+        order by id desc limit 1
     </select>
     <insert id="insertStudentInfo">
         INSERT INTO student_info
