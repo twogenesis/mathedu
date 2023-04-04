@@ -239,6 +239,7 @@ public class AdminService {
                     .build();
         }
         adminMapper.insertClassInfo(data);
+        adminMapper.insertClassTeacherConnInfo(data.getTeacherNo(), data.getClassNo());
         return AdminAPIResponseDAO.
                 builder()
                 .status(true)

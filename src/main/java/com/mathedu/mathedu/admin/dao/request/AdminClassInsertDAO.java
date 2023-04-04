@@ -24,4 +24,6 @@ public class AdminClassInsertDAO {
     private String endtime;
     @ApiModelProperty(name = "teacherNo", example = "1", notes = "선생님의 DB상의 번호", required = false)
     private Integer teacherNo;
+    @ApiModelProperty(name = "classNo", example = "1", notes = "반의 DB상의 번호", required = false)
+    private Integer classNo;
 }

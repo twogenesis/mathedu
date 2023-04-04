@@ -40,13 +40,13 @@
        )
     </insert>
     <select id="isExistExamScore" resultType="java.lang.Boolean">
-        select count(*) from exam_scores where exscore_exam_seq = #{examNo} and exscore_stu_seq = (
+        select count(*) = 1 from exam_scores where exscore_exam_seq = #{examNo} and exscore_stu_seq = (
             select stu_seq from student_info where stu_id = #{studentId}
         )
     </select>
     <update id="updateStudentExamScore">
         update exam_scores set exscore_score = #{score}
-        where exscore_seq = #{examNo} and exscore_stu_seq = (
+        where exscore_exam_seq = #{examNo} and exscore_stu_seq = (
             select stu_seq from student_info where stu_id = #{studentId}
         )
     </update>
@@ -67,12 +67,12 @@
       order by ${sort} ${order}
     </select>
     <select id="getMaxScoreStudent" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassExamStudentTinyInfoDAO">
-        select stu_name, MAX(exscore_score) as score from (
+        select stu_name as name, MAX(exscore_score) as score from (
           select * from exam_scores where exscore_exam_seq = #{examNo}
         ) a inner join student_info b on a.exscore_stu_seq = b.stu_seq;
     </select>
     <select id="getMinScoreStudent" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassExamStudentTinyInfoDAO">
-        select stu_name, MIN(exscore_score) as score from (
+        select stu_name as name, MIN(exscore_score) as score from (
           select * from exam_scores where exscore_exam_seq = #{examNo} and exscore_score >= 0
         ) a inner join student_info b on a.exscore_stu_seq = b.stu_seq;
     </select>

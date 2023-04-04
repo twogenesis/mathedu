@@ -48,11 +48,14 @@
     <delete id="deleteTeacherInfoById">
         delete from teacher_info where teacher_id = #{teacherId}
     </delete>
-    <insert id="insertClassInfo">
+    <insert id="insertClassInfo" parameterType="com.mathedu.mathedu.admin.dao.request.AdminClassInsertDAO" useGeneratedKeys="true" keyProperty="classNo" keyColumn="class_seq">
         INSERT INTO class_info
         (class_name, class_grade, class_days, class_opendt, class_closedt, class_starttime, class_endtime, class_teacher_seq)
         VALUES(#{name},#{grade},#{days},#{opendt},#{closedt},#{starttime},#{endtime},#{teacherNo})
 
+    </insert>
+    <insert id="insertClassTeacherConnInfo">
+        insert into teacher_class_conn(tcc_teacher_seq, tcc_class_seq) values(#{teacherNo}, #{classNo})
     </insert>
     <update id="updateClassInfo">
         UPDATE class_info
