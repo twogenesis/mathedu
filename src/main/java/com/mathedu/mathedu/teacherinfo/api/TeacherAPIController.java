@@ -24,7 +24,7 @@ public class TeacherAPIController {
     @GetMapping("/{teacherId}")
     public ResponseEntity<TeacherDetailInfoResponseDAO> getTeacherDetailInfo(
             @PathVariable @ApiParam(value = "선생님 아이디", required = true) String teacherId,
-            @RequestParam @ApiParam(value = "페이지 번호 (미입력 시 1번 페이지 조회)", required = false) @Nullable Integer page) {
+            @RequestParam(required = false) @ApiParam(value = "페이지 번호 (미입력 시 1번 페이지 조회)", required = false) @Nullable Integer page) {
         TeacherDetailInfoResponseDAO response = teacherService.getTeacherDetailInfo(teacherId, page);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

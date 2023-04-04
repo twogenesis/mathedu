@@ -21,8 +21,8 @@ public class ClassInfoAPIController {
     @GetMapping("/{teacherId}")
     public ResponseEntity<ClassListResponseDAO> getClassList(
             @PathVariable @ApiParam(value = "선생님 아이디", required = true) String teacherId,
-            @RequestParam @ApiParam(value = "페이지 (미 입력시 1번 페이지)") @Nullable Integer page,
-            @RequestParam @ApiParam(value = "검색어 (미 입력시 검색하지 않음)") @Nullable String keyword
+            @RequestParam(required = false) @ApiParam(value = "페이지 (미 입력시 1번 페이지)") @Nullable Integer page,
+            @RequestParam(required = false) @ApiParam(value = "검색어 (미 입력시 검색하지 않음)") @Nullable String keyword
     ) {
         ClassListResponseDAO response = classInfoService.getClassList(teacherId, page, keyword);
         return new ResponseEntity<>(response, response.getCode());

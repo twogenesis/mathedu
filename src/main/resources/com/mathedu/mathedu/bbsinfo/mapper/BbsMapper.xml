@@ -3,8 +3,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mathedu.mathedu.bbsinfo.mapper.BbsMapper">
     <insert id="insertBbs" parameterType="com.mathedu.mathedu.bbsinfo.dao.request.BbsInfoDAO" useGeneratedKeys="true" keyProperty="no" keyColumn="bbs_seq">
-        INSERT INTO bbs_info(bbs_title, bbs_content, bbs_teacher_seq, bbs_class_seq)
-        VALUES(#{title}, #{content}, #{teacherNo}, #{classNo});
+        INSERT INTO bbs_info(bbs_title, bbs_content, bbs_category, bbs_teacher_seq, bbs_class_seq)
+        VALUES(#{title}, #{content}, #{category}, #{teacherNo}, #{classNo});
     </insert>
     <update id="updateBbs">
         UPDATE bbs_info
@@ -33,6 +33,7 @@
 
     <select id="getTotalBbsCount" resultType="java.lang.Integer">
         select count(*) from bbs_info where bbs_title like '%${keyword}%'
+        and bbs_teacher_seq = #{teacherNo}
         <if test="classNo != 0">
             and bbs_class_seq = #{classNo}
         </if>
@@ -57,6 +58,7 @@
         select a.*, b.teacher_name as authorName from (
           select
             bbs_seq as no, bbs_category as category,
+            bbs_class_seq as classNo,
             bbs_title as title, bbs_regdt as regDt,
             bbs_content as contents, bbs_teacher_seq as authorNo,
             LAG(bbs_seq) over (order by bbs_seq) as prevNo,

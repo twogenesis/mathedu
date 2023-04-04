@@ -20,4 +20,56 @@
         where
             exam_seq = #{examNo}
     </update>
+    <select id="getExamList" resultType="com.mathedu.mathedu.examinfo.dao.response.ExamInfoDAO">
+        select * from exam_list_view
+        where classNo = #{classNo}
+        and examName like '%${keyword}%'
+        <if test="examType != 'all'">
+            and examType = #{examType}
+        </if>
+        order by ${orderType} ${order}
+        limit 10 offset ${offset}
+    </select>
+    <select id="getExamListCount" resultType="java.lang.Integer">
+        select count(*) from exam_list_view where classNo = #{classNo}
+        <if test="examType != 'all'">
+            and examType = #{examType}
+        </if>
+        and examName like '%${keyword}%'
+    </select>
+
+<!--    <select id="getExamScoreList" resultType="com.mathedu.mathedu.examinfo.dao.response.ExamScoreInfoDAO">-->
+<!--        select * from exam_score_list_view-->
+<!--        where examNo = #{examNo}-->
+<!--        limit 10 offset #{offset}-->
+<!--    </select>-->
+<!--    <select id="getExamScoreListCount" resultType="java.lang.Integer">-->
+<!--        select count(*) from exam_score_list_view where examNo = #{examNo}-->
+<!--    </select>-->
+    <select id="getExamScoreStudentList" resultType="com.mathedu.mathedu.examinfo.dao.response.ExamScoreInfoDAO">
+        select
+            stu_seq as studentNo,
+            stu_name as studentName,
+            stu_id as studentId,
+            CONCAT('/files/student/', stu_image) as imgURL,
+            class_seq as classNo,
+            class_name as className
+        from student_info a inner join class_info b
+        on a.stu_class_seq = b.class_seq
+        where stu_class_seq = #{classNo}
+        limit 10 offset #{offset}
+    </select>
+    <select id="getExamScoreDatas" resultType="com.mathedu.mathedu.examinfo.dao.response.ExamScoreDataDAO">
+        select exscore_stu_seq as examStuSeq, exscore_score as score
+        from exam_scores where exscore_exam_seq = #{examNo};
+    </select>
+    <select id="getExamInfoSummary" resultType="com.mathedu.mathedu.examinfo.dao.response.ExamInfoSummaryDAO">
+        select exam_seq as no, exam_name as name, DATE(exam_date) as examDate, exam_type as type
+        from exam_info where exam_seq = #{examNo};
+    </select>
+    <select id="getExamScoreStudentCount" resultType="java.lang.Integer">
+        select count(*) from student_info a inner join class_info b
+        on a.stu_class_seq = b.class_seq
+        where stu_class_seq = #{classNo};
+    </select>
 </mapper>

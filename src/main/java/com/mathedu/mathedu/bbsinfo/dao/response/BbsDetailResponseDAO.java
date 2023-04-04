@@ -18,6 +18,8 @@ import java.util.List;
 public class BbsDetailResponseDAO {
     @ApiModelProperty(name = "no", example = "1", notes = "글 번호", required = true)
     private Integer no;
+    @ApiModelProperty(name = "classNo", example = "1", notes = "반 번호", required = true)
+    private Integer classNo;
     @ApiModelProperty(name = "category", example = "수업자료", notes = "글 카테고리", required = true)
     private String category;
     @ApiModelProperty(name = "title", example = "샘플 타이틀", notes = "글 제목", required = true)

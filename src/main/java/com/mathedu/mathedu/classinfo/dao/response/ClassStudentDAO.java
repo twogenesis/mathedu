@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class ClassStudentDAO {
     @ApiModelProperty(name = "no", example = "1", notes = "학생의 DB상의 시퀀스번호", required = true)
     private Integer no;
+    @ApiModelProperty(name = "id", example = "23030001", notes = "학생의 아이디", required = true)
+    private String id;
     @ApiModelProperty(name = "img", example = "/file/student/asjkhgw34sdgh.jpg", notes = "학생 사진", required = true)
     private String img;
     @ApiModelProperty(name = "name", example = "김학생", notes = "학생 이름", required = true)

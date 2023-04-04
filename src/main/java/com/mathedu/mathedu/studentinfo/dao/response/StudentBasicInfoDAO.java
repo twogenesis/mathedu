@@ -14,7 +14,7 @@ public class StudentBasicInfoDAO {
     @ApiModelProperty(name = "name", example = "김학생", notes = "학생 이름", required = true)
     private String name;
     @ApiModelProperty(name = "profileImgURL", example = "/file/student/sdnh3j87sdfnweuht.jpg", notes = "사진", required = true)
-    private String profileImgURL;
+    private String imgURL;
     @ApiModelProperty(name = "birth", example = "2014-03-02", notes = "생일", required = true)
     private String birth;
     @ApiModelProperty(name = "phone", example = "010-1234-1234", notes = "전화번호", required = true)

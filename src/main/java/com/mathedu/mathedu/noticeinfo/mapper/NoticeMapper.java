@@ -16,7 +16,7 @@ public interface NoticeMapper {
     void insertNoticeFileInfos(@Param("files") List<String> files, @Param("noticeNo") Integer noticeNo);
     void deleteNotice(@Param("noticeNos") Integer[] noticeNos, @Param("teacherNo") Integer teacherNo);
 
-    Integer getTotalNoticeCount(@Param("classNo") Integer classNo, @Param("keyword") String keyword);
+    Integer getTotalNoticeCount(@Param("classNo") Integer classNo, @Param("teacherNo") Integer teacherNo, @Param("keyword") String keyword);
     List<NoticeSummaryDAO> getNoticeList(
             @Param("classNo") Integer classNo, @Param("teacherNo") Integer teacherNo,
             @Param("order") String order, @Param("keyword") String keyword, @Param("offset") Integer offset

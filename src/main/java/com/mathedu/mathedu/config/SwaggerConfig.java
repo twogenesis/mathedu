@@ -41,7 +41,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
         return new ApiInfoBuilder()
                 .title("Mathedu API Documentation")
                 .description(description)
-                .version("0.9.2")
+                .version("1.0.7")
                 .build();
     }
     @Override

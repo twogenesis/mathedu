@@ -62,6 +62,8 @@ public class StudentService {
                     .code(HttpStatus.BAD_REQUEST)
                     .build();
         }
+        data.setNewPwd(AESAlgorithm.Encrypt(data.getNewPwd()));
+        data.setOldPwd(AESAlgorithm.Encrypt(data.getOldPwd()));
         studentMapper.updateStudentPassword(id, data);
         return StudentResponseDAO.builder()
                 .status(true)

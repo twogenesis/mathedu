@@ -22,6 +22,7 @@ public class BbsService {
         BbsInfoDAO bbs = BbsInfoDAO.builder()
                 .title(data.getTitle())
                 .content(data.getContent())
+                .category(data.getCategory())
                 .teacherNo(data.getTeacherNo())
                 .classNo(data.getClassNo())
                 .build();
@@ -69,7 +70,7 @@ public class BbsService {
     public BbsListResponseDAO getBbsList(Integer classNo, Integer teacherNo, String order, String keyword, Integer page) {
         if(keyword == null) keyword = "";
         if(page == null) page = 1;
-        Integer totalCnt = bbsMapper.getTotalBbsCount(classNo, keyword);
+        Integer totalCnt = bbsMapper.getTotalBbsCount(classNo, teacherNo, keyword);
         Integer totalPage = (int)(Math.ceil(totalCnt / 10.0));
         List<BbsSummaryDAO> list = bbsMapper.getBbsList(classNo, teacherNo, order, keyword, (page-1)*10);
         return BbsListResponseDAO.builder()
@@ -105,6 +106,7 @@ public class BbsService {
                 response.setNextPost(info);
             }
             response.setNo(result.getNo());
+            response.setClassNo(result.getClassNo());
             response.setCategory(result.getCategory());
             response.setTitle(result.getTitle());
             response.setAuthorName(result.getAuthorName());

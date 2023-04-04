@@ -17,7 +17,7 @@ public interface BbsMapper {
 
     void deleteBbs(@Param("bbsNos") Integer[] bbsNos, @Param("teacherNo") Integer teacherNo);
 
-    Integer getTotalBbsCount(@Param("classNo") Integer classNo, @Param("keyword") String keyword);
+    Integer getTotalBbsCount(@Param("classNo") Integer classNo, @Param("teacherNo") Integer teacherNo, @Param("keyword") String keyword);
     List<BbsSummaryDAO> getBbsList(
             @Param("classNo") Integer classNo, @Param("teacherNo") Integer teacherNo,
             @Param("order") String order, @Param("keyword") String keyword, @Param("offset") Integer offset

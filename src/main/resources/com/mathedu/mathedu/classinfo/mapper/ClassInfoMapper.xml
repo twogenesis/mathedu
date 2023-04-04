@@ -9,6 +9,7 @@
         select
             b.class_seq as classNo, b.class_name as name,
             b.class_days as days, b.class_opendt as opendt,
+            b.class_grade as grade,
             b.class_closedt as closedt
         from teacher_class_conn a inner join class_info b
         on a.tcc_class_seq = b.class_seq
@@ -27,6 +28,7 @@
     <select id="getClassStudentList" resultType="com.mathedu.mathedu.classinfo.dao.response.ClassStudentDAO">
         select
             stu_seq as no, CONCAT('/file/student/',stu_image) as img,
+            stu_id as id,
             stu_name as name, stu_phone as phone, stu_alternate_phone as alternatephone,
             stu_address as address
         from student_info where stu_class_seq = #{classNo}

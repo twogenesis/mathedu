@@ -33,6 +33,7 @@
 
     <select id="getTotalNoticeCount" resultType="java.lang.Integer">
         select count(*) from notice_info where notice_title like '%${keyword}%'
+        and notice_teacher_seq = #{teacherNo}
         <if test="classNo != 0">
             and notice_class_seq = #{classNo}
         </if>
@@ -57,6 +58,7 @@
         select a.*, b.teacher_name as authorName from (
           select
             notice_seq as no, notice_category as category,
+            notice_class_seq as classNo,
             notice_title as title, notice_regdt as regDt,
             notice_content as contents, notice_teacher_seq as authorNo,
             LAG(notice_seq) over (order by notice_seq) as prevNo,

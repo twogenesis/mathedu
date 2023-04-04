@@ -22,6 +22,7 @@ public class NoticeService {
         NoticeInfoDAO notice = NoticeInfoDAO.builder()
                 .title(data.getTitle())
                 .content(data.getContent())
+                .category(data.getCategory())
                 .teacherNo(data.getTeacherNo())
                 .classNo(data.getClassNo())
                 .build();
@@ -69,7 +70,7 @@ public class NoticeService {
     public NoticeListResponseDAO getNoticeList(Integer classNo, Integer teacherNo, String order, String keyword, Integer page) {
         if(keyword == null) keyword = "";
         if(page == null) page = 1;
-        Integer totalCnt = noticeMapper.getTotalNoticeCount(classNo, keyword);
+        Integer totalCnt = noticeMapper.getTotalNoticeCount(classNo, teacherNo, keyword);
         Integer totalPage = (int)(Math.ceil(totalCnt / 10.0));
         List<NoticeSummaryDAO> list = noticeMapper.getNoticeList(classNo, teacherNo, order, keyword, (page-1)*10);
         return NoticeListResponseDAO.builder()
@@ -105,6 +106,7 @@ public class NoticeService {
                 response.setNextPost(info);
             }
             response.setNo(result.getNo());
+            response.setClassNo(result.getClassNo());
             response.setCategory(result.getCategory());
             response.setTitle(result.getTitle());
             response.setAuthorName(result.getAuthorName());

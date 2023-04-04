@@ -66,8 +66,8 @@ public class AdminAPIController {
     public ResponseEntity<AdminTeacherListResponseDAO> getTeacherList(
             @PathVariable @ApiParam(value = "정렬 방법 (asc, desc)", required = true) String order,
             @PathVariable @ApiParam(value = "정렬 기준 (name, regdt)", required = true) String orderType,
-            @RequestParam @ApiParam(value = "검색어 (미입력시 검색하지 않음)", required = false) @Nullable String keyword,
-            @RequestParam @ApiParam(value = "페이지 (미입력시 첫번째 페이지 출력)", required = false) @Nullable Integer page)
+            @RequestParam(required = false) @ApiParam(value = "검색어 (미입력시 검색하지 않음)", required = false) @Nullable String keyword,
+            @RequestParam(required = false) @ApiParam(value = "페이지 (미입력시 첫번째 페이지 출력)", required = false) @Nullable Integer page)
     {
         AdminTeacherListResponseDAO response = adminService.getTeacherList(order, orderType, keyword, page);
         return new ResponseEntity<>(response, response.getCode());
@@ -120,9 +120,9 @@ public class AdminAPIController {
     public ResponseEntity<AdminClassListResponseDAO> getClassList(
             @PathVariable @ApiParam(value = "정렬 기준 (class, teacher, opendt, closedt)", required = true) String orderref,
             @PathVariable @ApiParam(value = "정렬 방향 (asc, desc)", required = true) String order,
-            @RequestParam @ApiParam(value = "페이지 번호 (미입력 시 첫번째 페이지)", required = false) @Nullable Integer page,
-            @RequestParam @ApiParam(value = "검색어 (미입력 시 검색하지 않음)", required = false) @Nullable String keyword,
-            @RequestParam @ApiParam(value = "검색 기준 (class, teacher) 미 입력시 반 이름 기준으로 검색", required = false) @Nullable String searchType
+            @RequestParam(required = false) @ApiParam(value = "페이지 번호 (미입력 시 첫번째 페이지)", required = false) @Nullable Integer page,
+            @RequestParam(required = false) @ApiParam(value = "검색어 (미입력 시 검색하지 않음)", required = false) @Nullable String keyword,
+            @RequestParam(required = false) @ApiParam(value = "검색 기준 (class, teacher) 미 입력시 반 이름 기준으로 검색", required = false) @Nullable String searchType
     ) {
         AdminClassListResponseDAO response = adminService.getClassList(orderref, order, page, keyword, searchType);
         return new ResponseEntity<>(response, HttpStatus.OK);
