@@ -141,6 +141,9 @@ public class ClassInfoService {
         ClassExamStudentTinyInfoDAO min = classInfoMapper.getMinScoreStudent(examNo);
         List<Integer> areaData = classInfoMapper.getScoreAreaData(examNo);
 
+        System.out.println(max);
+        System.out.println(min);
+
         ClassExamScoreSummaryDAO data = ClassExamScoreSummaryDAO.builder()
                 .areaData(areaData)
                 .maxScore(max)
